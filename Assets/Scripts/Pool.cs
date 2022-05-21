@@ -3,34 +3,58 @@ using UnityEngine;
 
 public class Pool : MonoBehaviour
 {
-    private List<GameObject> _cubes;
+    [SerializeField]
+    private EventManager _eventManager;
+
+    private List<TrackStruct> _tracks = new List<TrackStruct>();
+    private List<GameObject> _cubes = new List<GameObject>();
+    private int _next;
 
     private void Awake()
     {
-        _cubes = new List<GameObject>();
+        _eventManager.Restart += Restart;
+    }
+
+    public void Add(TrackStruct track)
+    {
+        _tracks.Add(track);
     }
 
     public void Add(GameObject cube)
     {
-        cube.SetActive(false);
-        cube.transform.parent = transform;
         _cubes.Add(cube);
     }
 
-    public GameObject Take()
+    public TrackStruct Take()
     {
-        GameObject cube = null;
-        if (CheckCount())
-        {
-            cube = _cubes[0];
-            _cubes.Remove(cube);
-        }
+        var track = _tracks[_next];
+        SetNext();
+        return track;
+    }
 
+    public GameObject TakeCube()
+    {
+        var cube = _cubes.Count > 0? _cubes[0] : null;
+        if (cube != null)
+            _cubes.Remove(cube);
         return cube;
     }
 
-    public bool CheckCount()
+    private void SetNext()
     {
-        return _cubes.Count > 0;
+        _next = _tracks.Count - 1 > _next ? _next + 1 : 0;
+    }
+
+    private void Restart()
+    {
+        foreach (var cube in _cubes)
+        {
+            cube.SetActive(false);
+        }
+
+        foreach (var track in _tracks)
+        {
+            track.Track.SetActive(false);
+        }
     }
 }

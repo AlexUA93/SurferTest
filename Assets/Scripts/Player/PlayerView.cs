@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,11 +9,37 @@ public class PlayerView : MonoBehaviour
     private GameObject _cubeHolder;
     [SerializeField]
     private GameObject _player;
-    private Vector3 _position;
+    [SerializeField]
+    private Animator _animator;
+    [SerializeField]
+    private EventManager eventManager;
+    [SerializeField]
+    private List<Rigidbody> _rigidbodies;
+    [SerializeField]
+    private Pool _pool;
 
-    public void Reset()
+    private Vector3 _position;
+    private Vector3 _startPosition;
+
+
+    protected void Awake()
     {
-        _position = Vector3.zero;
+        eventManager.RemoveCube += RemoveCube;
+        eventManager.RebuildAdditional += Restart;
+        _position = new Vector3(0, _cubeHolder.transform.position.y, 0) + Vector3.up;
+        _startPosition = transform.position;
+    }
+
+    public void Restart()
+    {
+        _position = new Vector3(0, _cubeHolder.transform.position.y, 0);
+        transform.position = _startPosition;
+        var cube = _pool.TakeCube();
+        if (cube != null)
+        {
+            cube.tag = "CubeInHolder";
+            AddCube(cube);
+        }    
     }
 
     public void Move(Vector3 direction)
@@ -29,20 +54,25 @@ public class PlayerView : MonoBehaviour
         if (other.tag == "Cube")
         {
             other.gameObject.tag = "CubeInHolder";
+            if (eventManager.AddCube != null)
+                eventManager.AddCube.Invoke(other.gameObject);
             AddCube(other.gameObject);
         }
     }
 
     private void AddCube(GameObject cube)
     {
-        cube.transform.position = _cubeHolder.transform.position + _position;
+        var pos = _cubeHolder.transform.position;
+        _position = new Vector3(pos.x, _position.y, pos.z);
+        cube.transform.position = _position;
         _position += Vector3.up;
         cube.transform.parent = _cubeHolder.transform;
-        _player.transform.position = _cubeHolder.transform.position + _position;
-
+        cube.SetActive(true);
+        _player.transform.position = new Vector3(cube.transform.position.x, cube.transform.localPosition.y + 1, cube.transform.position.z);
+        _animator.SetTrigger("Jump");
     }
 
-    public void RemoveCube()
+    private void RemoveCube(GameObject value)
     {
         _position -= Vector3.up;
     }

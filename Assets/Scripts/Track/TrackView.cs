@@ -1,60 +1,55 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrackView : MonoBehaviour
+public class TrackView : SimpleTrackView
 {
-    [SerializeField]
-    private GameObject _cube;
-    [SerializeField]
-    private GameObject _wall;
-    [SerializeField]
-    private List<Transform> _cubeSpawnPoint;
-    [SerializeField]
-    private List<Transform> _wallSpawnPoint;
-    [SerializeField]
-    private Pool _pool;
-    private float _nextYPosition;
+    private const int kCobeInLine = 5;
 
-    public void SpawnWall(int[] wallsCount)
+    [SerializeField]
+    private List<GameObject> _cubeInWall;
+    [SerializeField]
+    private GameObject _spawnNextTrack;
+   
+    public override void Rebuild(GameObgectType type, List<int> value)
     {
-        for (int i = 0; i < wallsCount.Length; i++)
+        _spawnNextTrack.tag = "SpawnNextTrack";
+        switch (type)
         {
-            _nextYPosition = 0;
-            CreateWall(_wallSpawnPoint[i], wallsCount[i]);
+            case GameObgectType.Wall:
+                SetWallVisibility(value);
+                break;
+            case GameObgectType.Non:
+                break;
+            default:
+                Debug.LogWarning($"Incorect type {type}");
+                break;
         }
+        SpawnCube();
+        if (_drawLine != null)
+            _drawLine.Rebuild();
     }
 
-    private void CreateWall(Transform spawnPoint, int count)
+    protected void SetWallVisibility(List<int> value)
     {
-        for (int i = 0; i < count; i++)
+        int next = 0;
+        int counter = 0;
+        if (value.Count > 0)
         {
-            spawnPoint.position += Vector3.up * _nextYPosition;
-            var wall = Instantiate(_wall, spawnPoint.position, transform.rotation, transform);
-            ChangeScale(wall);
-            _nextYPosition = 1f;
-        }
-    }
-
-    public void SpawnCube()
-    {
-        for (int i = 0; i < _cubeSpawnPoint.Count; i++)
-        {
-            
-            var point = _cubeSpawnPoint[i];
-            var position = point.position + Vector3.right * Random.Range(-2f, 2f);
-            if (_pool.CheckCount())
+            int count = value[next];
+            foreach (var cube in _cubeInWall)
             {
-                var cube = _pool.Take();
-                cube.transform.position = position;
-                cube.transform.parent = transform;
+                cube.SetActive(count >= counter);
+                counter++;
+                if (counter == kCobeInLine)
+                {
+                    next++;
+                    counter = 0;
+                    if (value.Count - 1 >= next)
+                    {
+                        count = value[next];
+                    }
+                }
             }
-            else
-                ChangeScale(Instantiate(_cube, position, transform.rotation, transform));
         }
-    }
-
-    private void ChangeScale(GameObject cube)
-    {
-        cube.transform.localScale = new Vector3(cube.transform.localScale.x / 5, cube.transform.localScale.y / 5, cube.transform.localScale.z / 30);
     }
 }

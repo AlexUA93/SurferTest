@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7102520775662407245}
   - component: {fileID: 4958196889370421217}
   - component: {fileID: 7724561820160982266}
+  - component: {fileID: 4598547602260068020}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -81,6 +82,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4598547602260068020
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851792857863084134}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3298146576256067614
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +106,7 @@ GameObject:
   - component: {fileID: 8468905800350330301}
   - component: {fileID: 6584967156583834611}
   - component: {fileID: 8524393104302219997}
+  - component: {fileID: 4641569599721763283}
   m_Layer: 0
   m_Name: CubeWall
   m_TagString: Wall
@@ -143,3 +158,15 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4641569599721763283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3298146576256067614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 653688d83eb5de143b8a69e5487b5604, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

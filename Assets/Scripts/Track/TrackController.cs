@@ -1,31 +1,20 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TrackController
 {
-    private TrackModel _trackModel;
-    private TrackView _trackView;
+    private IEnvironmentModel _trackModel;
+    private IEnvironmentView _trackView;
 
-    public TrackController(TrackView trackView)
+    public TrackController(IEnvironmentView view, IEnvironmentModel model)
     {
-        _trackView = trackView;
-        _trackModel = new TrackModel();
-        SpawnWall();
-        SpawnCube();
+        _trackView = view;
+        _trackModel = model;
     }
 
-    private void SpawnWall()
+    public void Rebuild()
     {
-        int[] wallsCount = new int[_trackModel.MaxCount];
-        for (int i = 0; i < _trackModel.MaxCount; i++)
-        {
-            wallsCount[i] = Random.Range(_trackModel.MinCount, _trackModel.MaxCount);
-        }
-
-        _trackView.SpawnWall(wallsCount);
+        _trackModel.TakeOparation(_trackView);
     }
 
-    public void SpawnCube()
-    {
-        _trackView.SpawnCube();
-    }
 }

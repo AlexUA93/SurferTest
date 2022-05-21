@@ -8,6 +8,16 @@ TagManager:
   - Cube
   - CubeInHolder
   - Wall
+  - SpawnPoint
+  - Pool
+  - Track
+  - Road
+  - SpawnTrackWhithWall
+  - EventManager
+  - Non
+  - SpawnNextTrack
+  - SimpleTrack
+  - PlayerSkelet
   layers:
   - Default
   - TransparentFX
